@@ -1,0 +1,23 @@
+{% load render_table from django_tables2 %}
+<!doctype html>
+<html>
+    <head>
+        <title>Tabulka-Majitele</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    </head>
+    <body>
+    </body>
+</html>
+<form method="post",action="udelej">
+    {% csrf_token %}
+
+    {% load render_table from django_tables2 %}
+    {% render_table table %}
+    <select name="action_options">
+            <option value="delete">Smazat</option>
+            <option value="new">Nový</option>
+            <option value="generovat">Generovat</option>
+    </select>
+    <input type="text" name="cena" value="" placeholder="Zadejte cenu">
+    <input type="submit" name="smaz" class="btn btn-primary" value="Proveď">
+</form>

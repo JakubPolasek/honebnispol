@@ -1,9 +1,46 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseRedirect
+from django.views.generic import ListView
+from django_tables2 import SingleTableView
+from .models import Majitele
+from .tables import MajiteleTable, PozemkyTable
 
 
 # Create your views here.
 def base_view(request, *args, **kwargs):
+    return render(request, "base.html", {})
 
-    return HttpResponse("<h1>Hello World</h1>")
-    #return render(request, "base.html", {})
+def majitele_view_get(request):
+    if request.method == "GET":
+        table = MajiteleTable(Majitele.objects.all())
+        return render(request, 'tabrender.html', context={'table': table})
+
+def majitele_view_post(request):
+    if request.method == "POST":
+        action = request.POST.get('action_options')
+        pks = request.POST.getlist('vyber')
+        selected_objects = Majitele.objects.filter(pk__in=pks)
+        if action == 'delete':
+            selected_objects.delete()
+        if action == 'new':
+            return redirect('/admin/prvni/majitele/add/')
+        if action == 'generovat':
+            return redirect('/pozemky/')
+
+    return render(request, 'tabrender.html', context={'table': MajiteleTable(Majitele.objects.all())})
+
+def pozemky_view_get(request):
+    if request.method == "GET":
+        table = PozemkyTable(Majitele.objects.all())
+        return render(request, 'tabrender2.html', context={'table': table})
+
+def pozemky_view_post(request):
+    if request.method == "POST":
+        action = request.POST.get('action_options')
+        if action == 'delete':
+            selected_objects.delete()
+        if action == 'new':
+            return redirect('/admin/prvni/majitele/add/')
+        if action == 'generovat':
+            return redirect('/pozemky/')
+    return render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.all())})
