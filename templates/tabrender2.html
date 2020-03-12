@@ -14,9 +14,11 @@
     {% load render_table from django_tables2 %}
     {% render_table table %}
     <select name="action_options">
-            <option value="delete">Smazat</option>
-            <option value="new">Nový</option>
-            <option value="generovat">Generovat</option>
+            <option value="preze">Prezenční listina</option>
+            <option value="vyplat">Výplatní listina</option>
+            <option value="posta">Poštou</option>
+            <option value="osobne">Osobně</option>
     </select>
-    <input type="submit" name="smaz" class="btn btn-primary" value="Proveď">
+    <input type="submit" name="pozbut" class="btn btn-primary" value="Proveď">
+    <button name="zpet-btn" value="zpet-btn" class="btn btn-primary">Zpět</button>
 </form>

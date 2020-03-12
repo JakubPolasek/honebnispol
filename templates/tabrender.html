@@ -8,16 +8,16 @@
     <body>
     </body>
 </html>
-<form method="post",action="udelej">
+<form method="post",action="udele">
     {% csrf_token %}
 
     {% load render_table from django_tables2 %}
     {% render_table table %}
-    <select name="action_options">
+    <select name="action_op">
             <option value="delete">Smazat</option>
             <option value="new">Nový</option>
             <option value="generovat">Generovat</option>
     </select>
-    <input type="text" name="cena" value="" placeholder="Zadejte cenu">
-    <input type="submit" name="smaz" class="btn btn-primary" value="Proveď">
+    <input type="text" name="cena" value="" placeholder="Zadejte Cenu">
+    <input type="submit" name="majbut" class="btn btn-primary" value="Proveď">
 </form>

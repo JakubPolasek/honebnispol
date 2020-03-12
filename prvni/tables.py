@@ -9,7 +9,7 @@ class MajiteleTable(tables.Table):
         model = Majitele
         template_name = 'django_tables2/bootstrap.html'
         fields = ("vyber","lv","katastr","jmeno","ulice","mesto",
-        "psc","v_pole","v_les","v_celkem","nevyplaceno","podil","poznamka","prezence","vyplatni","postou","osobne", )
+        "psc","v_pole","v_les","v_celkem","nevyplaceno","podil","poznamka")
 
 class PozemkyTable(tables.Table):
     c_pole = tables.Column(accessor='vypocet')

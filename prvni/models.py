@@ -22,14 +22,5 @@ class Majitele(models.Model):
     postou = models.BooleanField()
     osobne = models.BooleanField()
 
-    def vypocet(self):
-        price = request.POST.get('cena')
-        vymera = Entry.objects.values('v_pole')
-        for i in v_pole:
-            d=vymera*price
-        return()
-
-
-
     def __str__(self):
         return '%s'%(self.jmeno)

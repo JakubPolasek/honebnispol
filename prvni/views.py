@@ -10,6 +10,10 @@ from .tables import MajiteleTable, PozemkyTable
 def base_view(request, *args, **kwargs):
     return render(request, "base.html", {})
 
+def zpet_btn(request):
+    if request.GET.get('zpet-btn'):
+        return redirect('')
+
 def majitele_view_get(request):
     if request.method == "GET":
         table = MajiteleTable(Majitele.objects.all())
@@ -17,16 +21,15 @@ def majitele_view_get(request):
 
 def majitele_view_post(request):
     if request.method == "POST":
-        action = request.POST.get('action_options')
+        akce = request.POST.get('action_op')
         pks = request.POST.getlist('vyber')
         selected_objects = Majitele.objects.filter(pk__in=pks)
-        if action == 'delete':
+        if akce == 'delete':
             selected_objects.delete()
-        if action == 'new':
+        if akce == 'new':
             return redirect('/admin/prvni/majitele/add/')
-        if action == 'generovat':
+        if akce == 'generovat':
             return redirect('/pozemky/')
-
     return render(request, 'tabrender.html', context={'table': MajiteleTable(Majitele.objects.all())})
 
 def pozemky_view_get(request):
@@ -37,10 +40,12 @@ def pozemky_view_get(request):
 def pozemky_view_post(request):
     if request.method == "POST":
         action = request.POST.get('action_options')
-        if action == 'delete':
-            selected_objects.delete()
-        if action == 'new':
-            return redirect('/admin/prvni/majitele/add/')
-        if action == 'generovat':
-            return redirect('/pozemky/')
+        if action == 'preze':
+            return render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.filter(prezence=1))})
+        if action == 'vyplat':
+            return render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.filter(vyplatni=1))})
+        if action == 'posta':
+            return render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.filter(postou=1))})
+        if action == 'osobne':
+            return render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.filter(osobne=1))})
     return render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.all())})
