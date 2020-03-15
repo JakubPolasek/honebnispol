@@ -10,10 +10,6 @@ from .tables import MajiteleTable, PozemkyTable
 def base_view(request, *args, **kwargs):
     return render(request, "base.html", {})
 
-def zpet_btn(request):
-    if request.GET.get('zpet-btn'):
-        return redirect('')
-
 def majitele_view_get(request):
     if request.method == "GET":
         table = MajiteleTable(Majitele.objects.all())
@@ -48,4 +44,6 @@ def pozemky_view_post(request):
             return render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.filter(postou=1))})
         if action == 'osobne':
             return render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.filter(osobne=1))})
+        if action == 'zakladni':
+            render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.all())})
     return render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.all())})
