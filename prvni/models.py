@@ -1,7 +1,8 @@
 from django.db import models
 
 class Majitele(models.Model):
-    lv = models.IntegerField()
+    cena = models.IntegerField(default=0)
+    lv = models.IntegerField(null=True, blank=True)
     katastr = models.CharField(max_length=40)
     jmeno = models.CharField(max_length=40)
     ulice = models.CharField(max_length=30)
@@ -10,9 +11,9 @@ class Majitele(models.Model):
     v_pole = models.DecimalField(decimal_places=4, max_digits=10)
     v_les =  models.DecimalField(decimal_places=4, max_digits=10)
     v_celkem = models.DecimalField(decimal_places=4, max_digits=10)
-    cena_pole = models.IntegerField()
-    cena_les = models.IntegerField()
-    cena_rok = models.IntegerField()
+    cena_pole = models.IntegerField(default=0)
+    cena_les = models.IntegerField(default=0)
+    cena_rok = models.IntegerField(default=0)
     nevyplaceno = models.IntegerField()
     podil = models.CharField(max_length=5)
     hlasu = models.IntegerField()

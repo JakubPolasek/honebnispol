@@ -4,7 +4,7 @@ from django.views.generic import ListView
 from django_tables2 import SingleTableView
 from .models import Majitele
 from .tables import MajiteleTable, PozemkyTable
-
+from django.db.models import F, ExpressionWrapper, IntegerField
 
 # Create your views here.
 def base_view(request, *args, **kwargs):
@@ -25,7 +25,15 @@ def majitele_view_post(request):
         if akce == 'new':
             return redirect('/admin/prvni/majitele/add/')
         if akce == 'generovat':
+            c_pole = Majitele.objects.annotate(vypocet_p=ExpressionWrapper(F('cena') * F('v_pole'), output_field=IntegerField()))
+            c_lesa = Majitele.objects.annotate(vypocet_l=ExpressionWrapper(F('cena') * F('v_les'), output_field=IntegerField()))
+            cen_pol = Majitele(cena_pole=c_pole)
+            cen_pol.save()
             return redirect('/pozemky/')
+        if akce == 'nastav_c':
+            cena_form = request.POST["cena"]
+            nastavena_cena = Majitele(cena=cena_form)
+            nastavena_cena.save()
     return render(request, 'tabrender.html', context={'table': MajiteleTable(Majitele.objects.all())})
 
 def pozemky_view_get(request):
