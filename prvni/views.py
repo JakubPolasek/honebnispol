@@ -5,10 +5,9 @@ from django_tables2 import SingleTableView
 from .models import Majitele
 from .tables import MajiteleTable, PozemkyTable
 from django.db.models import F, ExpressionWrapper, IntegerField
+from django.db.models.functions import Round
 
-# Create your views here.
-def base_view(request, *args, **kwargs):
-    return render(request, "base.html", {})
+# Create your views here
 
 def majitele_view_get(request):
     if request.method == "GET":
@@ -25,15 +24,17 @@ def majitele_view_post(request):
         if akce == 'new':
             return redirect('/admin/prvni/majitele/add/')
         if akce == 'generovat':
-            c_pole = Majitele.objects.annotate(vypocet_p=ExpressionWrapper(F('cena') * F('v_pole'), output_field=IntegerField()))
-            c_lesa = Majitele.objects.annotate(vypocet_l=ExpressionWrapper(F('cena') * F('v_les'), output_field=IntegerField()))
-            cen_pol = Majitele(cena_pole=c_pole)
-            cen_pol.save()
+            Majitele.objects.all().update(cena_pole=F('cena_p') * F('v_pole'))
+            Majitele.objects.all().update(cena_les=F('cena_l') * F('v_les'))
+            Majitele.objects.all().update(cena_rok=F('cena_les') + F('cena_pole'))
+            Majitele.objects.all().update(hlasu=Round('v_celkem'))
             return redirect('/pozemky/')
-        if akce == 'nastav_c':
-            cena_form = request.POST["cena"]
-            nastavena_cena = Majitele(cena=cena_form)
-            nastavena_cena.save()
+        if akce == 'nastav_c_l':
+            cena_l_form = request.POST["cena"]
+            Majitele.objects.all().update(cena_l=cena_l_form)
+        if akce == 'nastav_c_p':
+            cena_p_form = request.POST["cena"]
+            Majitele.objects.all().update(cena_p=cena_p_form)
     return render(request, 'tabrender.html', context={'table': MajiteleTable(Majitele.objects.all())})
 
 def pozemky_view_get(request):
@@ -52,6 +53,12 @@ def pozemky_view_post(request):
             return render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.filter(postou=1))})
         if action == 'osobne':
             return render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.filter(osobne=1))})
+        if action == 'nic':
+            return render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.filter(osobne=0, prezence=0, vyplatni=0, postou=0))})
         if action == 'zakladni':
-            render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.all())})
+            return render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.all())})
+        if action == 'tiskprez':
+            return render(request, 'tabrender3.html', context={'table': PozemkyTable(Majitele.objects.filter(prezence=1))})
+        if action == 'tiskvyp':
+            return render(request, 'tabrender3.html', context={'table': PozemkyTable(Majitele.objects.filter(vyplatni=1))})
     return render(request, 'tabrender2.html', context={'table': PozemkyTable(Majitele.objects.all())})
